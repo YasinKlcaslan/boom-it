@@ -1,0 +1,50 @@
+import React from 'react'
+import { FaGoogle } from 'react-icons/fa'
+import { FaApple } from 'react-icons/fa'
+import Footer from '@/components/Footer'
+
+function page() {
+  return (
+    <>
+      <div className="min-h-screen flex items-center justify-center bg-white relative">
+        <img src="/boomit-black.png" alt="BoomIt Logo" className="absolute top-2 left-2 w-16 h-16 object-contain"/>
+        <div className="flex flex-col items-center justify-center gap-6">
+          <div className="flex flex-col items-center gap-2">
+            <h1 className="Red Hat Display text-7xl font-extrabold pb-7">BoomIt!</h1>
+            <p className="Poppins"><span className="font-semibold">Sign In</span> to continue with your <span className="font-semibold">BoomIt!</span> account.</p>
+          </div>
+          <div className="min-w-[400px] max-w-sm w-full Poppins">
+            <form className="flex flex-col gap-5 mb-6">
+              <div className="relative w-full">
+                <input type="email" name="floating_email" id="floating_email" className="block py-4 px-3 w-full text-sm text-black border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-black peer placeholder:opacity-0" placeholder="Email" required />
+                <label htmlFor="floating_email" className="pointer-events-none absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-4 left-4 origin-[0] peer-focus:left-4 peer-focus:text-black peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:left-4 peer-focus:scale-75 peer-focus:-translate-y-6 bg-white px-1">Email</label>
+              </div>
+              <div className="relative w-full">
+                <input type="password" name="floating_password" id="floating_password" className="block py-4 px-3 w-full text-sm text-black border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-black peer placeholder:opacity-0" placeholder="Password" required />
+                <label htmlFor="floating_password" className="pointer-events-none absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-4 left-4 origin-[0] peer-focus:left-4 peer-focus:text-black peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:left-4 peer-focus:scale-75 peer-focus:-translate-y-6 bg-white px-1">Password</label>
+              </div>
+              <button type="submit" className="py-3 rounded-lg bg-black text-white font-semibold cursor-pointer transition-colors hover:bg-white hover:text-black hover:outline outline-black">Log In</button>
+            </form>
+            <div className="flex items-center my-4">
+              <div className="flex-grow h-px bg-gray-200" />
+              <span className="mx-3 text-gray-400 text-sm">or</span>
+              <div className="flex-grow h-px bg-gray-200" />
+            </div>
+            <div className="flex flex-col gap-3">
+              <button className="w-full py-3 rounded-lg border border-black bg-white text-black font-semibold text-base flex items-center justify-center gap-2 cursor-pointer transition-colors group hover:bg-black hover:text-white">
+                <span className="transition-colors group-hover:text-white text-black"><FaGoogle size={20} /></span>Log In with Google
+              </button>
+              <button className="w-full py-3 rounded-lg border border-black bg-white text-black font-semibold text-base flex items-center justify-center gap-2 cursor-pointer transition-colors group hover:bg-black hover:text-white">
+                <span className="transition-colors group-hover:text-white text-black"><FaApple size={24} /></span>Log In with Apple
+              </button>
+            </div>
+            <p className="text-center text-gray-500 text-sm mt-6">Don't have an account? <a href="/register" className="text-black font-semibold hover:underline">Sign up</a>.</p>
+          </div>
+        </div>
+      </div>
+      <Footer />      
+    </>
+  )
+}
+
+export default page
