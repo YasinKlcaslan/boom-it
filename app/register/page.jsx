@@ -1,10 +1,47 @@
-import React from 'react'
+"use client";
+import React, { useState } from 'react'
 import { FaGoogle } from 'react-icons/fa'
 import { FaApple } from 'react-icons/fa'
 import Footer from '@/components/Footer'
 import Button from '@/components/Button'
 
 function page() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+    try {
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password })
+      });
+
+      const text = await res.text();
+      console.log("Response status:", res.status);
+      console.log("Response text:", text);
+
+      let data;
+      try {
+        data = JSON.parse(text); 
+      } catch (err) {
+        console.error("Invalid JSON response received:", text);
+        throw new Error("Invalid JSON response received.");
+      }
+
+      if (!res.ok) throw new Error(data.message || "Registration failed");
+      setSuccess("Registration successful! You can now log in.");
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
   return (
     <>
       <div className="min-h-screen flex items-center justify-center bg-[#171717]">
@@ -18,19 +55,21 @@ function page() {
             <p className="Poppins text-white">Sign up and start sending and receiving files.</p>
           </div>
           <div className="min-w-[400px] max-w-sm w-full Poppins">
-            <form className="flex flex-col gap-5 mb-6">
+            <form className="flex flex-col gap-5 mb-6" onSubmit={handleSubmit}>
               <div className="relative w-full">
-                <input type="text" className="block py-4 px-3 w-full text-sm text-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-white peer placeholder:opacity-0" placeholder="Name" required />
+                <input type="text" value={name} onChange={e => setName(e.target.value)} className="block py-4 px-3 w-full text-sm text-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-white peer placeholder:opacity-0" placeholder="Name" required />
                 <label className="pointer-events-none absolute text-sm text-gray-400 duration-300 transform -translate-y-6 scale-75 top-4 left-4 origin-[0] peer-focus:left-4 peer-focus:text-white peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:left-4 peer-focus:scale-75 peer-focus:-translate-y-6 bg-[#171717] px-1">Name</label>
               </div>
               <div className="relative w-full">
-                <input type="email" className="block py-4 px-3 w-full text-sm text-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-white peer placeholder:opacity-0" placeholder="Email" required />
+                <input type="email" value={email} onChange={e => setEmail(e.target.value)} className="block py-4 px-3 w-full text-sm text-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-white peer placeholder:opacity-0" placeholder="Email" required />
                 <label className="pointer-events-none absolute text-sm text-gray-400 duration-300 transform -translate-y-6 scale-75 top-4 left-4 origin-[0] peer-focus:left-4 peer-focus:text-white peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:left-4 peer-focus:scale-75 peer-focus:-translate-y-6 bg-[#171717] px-1">Email</label>
               </div>
               <div className="relative w-full">
-                <input type="password" className="block py-4 px-3 w-full text-sm text-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-white peer placeholder:opacity-0" placeholder="Password" required />
+                <input type="password" value={password} onChange={e => setPassword(e.target.value)} className="block py-4 px-3 w-full text-sm text-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-white peer placeholder:opacity-0" placeholder="Password" required />
                 <label className="pointer-events-none absolute text-sm text-gray-400 duration-300 transform -translate-y-6 scale-75 top-4 left-4 origin-[0] peer-focus:left-4 peer-focus:text-white peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:left-4 peer-focus:scale-75 peer-focus:-translate-y-6 bg-[#171717] px-1">Password</label>
               </div>
+              {error && <div className="text-red-400 text-sm">{error}</div>}
+              {success && <div className="text-green-400 text-sm">{success}</div>}
               <Button type="submit" className="bg-white text-black hover:bg-transparent hover:text-white hover:outline outline-white" full>Sign Up</Button>
             </form>
             <p className="text-center text-gray-300 text-xs mt-6">By creating an account, you agree to our <a href="/terms" className="text-gray-300 font-semibold hover:underline">Terms of Service</a> and <a href="/privacy" className="text-gray-300 font-semibold hover:underline">Privacy and Cookie Statement</a>.</p>

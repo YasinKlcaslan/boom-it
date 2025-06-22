@@ -1,10 +1,32 @@
-import React from 'react'
+"use client";
+import React, { useState } from 'react'
 import { FaGoogle } from 'react-icons/fa'
 import { FaApple } from 'react-icons/fa'
 import Footer from '@/components/Footer'
 import Button from '@/components/Button'
+import { signIn } from "next-auth/react";
 
 function page() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    const res = await signIn("credentials", {
+      redirect: false,
+      email,
+      password,
+    });
+
+    if (res.error) {
+      setError(res.error);
+    } else {
+      alert("Login successful");
+    }
+  };
+
   return (
     <>
       <div className="min-h-screen flex items-center justify-center bg-white">
@@ -17,15 +39,16 @@ function page() {
             <p className="Poppins"><span className="font-semibold">Log In</span> to continue with your <span className="font-semibold">BoomIt!</span> account.</p>
           </div>
           <div className="min-w-[400px] max-w-sm w-full Poppins">
-            <form className="flex flex-col gap-5 mb-6">
+            <form className="flex flex-col gap-5 mb-6" onSubmit={handleSubmit}>
               <div className="relative w-full">
-                <input type="email" className="block py-4 px-3 w-full text-sm text-black border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-black peer placeholder:opacity-0" placeholder="Email" required />
+                <input type="email" value={email} onChange={e => setEmail(e.target.value)} className="block py-4 px-3 w-full text-sm text-black border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-black peer placeholder:opacity-0" placeholder="Email" required />
                 <label className="pointer-events-none absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-4 left-4 origin-[0] peer-focus:left-4 peer-focus:text-black peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:left-4 peer-focus:scale-75 peer-focus:-translate-y-6 bg-white px-1">Email</label>
               </div>
               <div className="relative w-full">
-                <input type="password" className="block py-4 px-3 w-full text-sm text-black border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-black peer placeholder:opacity-0" placeholder="Password" required />
+                <input type="password" value={password} onChange={e => setPassword(e.target.value)} className="block py-4 px-3 w-full text-sm text-black border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-black peer placeholder:opacity-0" placeholder="Password" required />
                 <label className="pointer-events-none absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-4 left-4 origin-[0] peer-focus:left-4 peer-focus:text-black peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:left-4 peer-focus:scale-75 peer-focus:-translate-y-6 bg-white px-1">Password</label>
               </div>
+              {error && <div className="text-red-500 text-sm">{error}</div>}
               <Button type="submit" dark className="hover:bg-white hover:text-black hover:outline outline-black" full>Log In</Button>
             </form>
             <div className="flex items-center my-4">
@@ -34,8 +57,8 @@ function page() {
               <div className="flex-grow h-px bg-gray-200" />
             </div>
             <div className="flex flex-col gap-3">
-              <Button full border group textSize="text-base" className="hover:bg-[#171717] hover:text-white" icon={() => <FaApple size={24} className="transition-colors group-hover:text-white text-black" />}>Log In with Apple</Button>
               <Button full border group textSize="text-base" className="hover:bg-[#171717] hover:text-white" icon={() => <FaGoogle size={20} className="transition-colors group-hover:text-white text-black" />}>Log In with Google</Button>
+              <Button full border group textSize="text-base" className="hover:bg-[#171717] hover:text-white" icon={() => <FaApple size={24} className="transition-colors group-hover:text-white text-black" />}>Log In with Apple</Button>
             </div>
             <p className="text-center text-gray-500 text-sm mt-6">Don't have an account? <a href="/register" className="text-black font-semibold hover:underline">Sign up</a>.</p>
           </div>

@@ -7,7 +7,7 @@ import FileTransfer from '@/components/FileTransfer'
 
 function page() {
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-tr from-[#a0a0a0] via-white to-[#eeeeee]">
+    <div className="min-h-screen flex flex-col">
       <Navbar/>
       <main className="flex flex-1 items-center justify-center">
         <FileTransfer />

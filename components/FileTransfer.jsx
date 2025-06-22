@@ -7,7 +7,7 @@ function FileTransfer() {
   const [selectedFolders, setSelectedFolders] = React.useState([]);
 
   return (
-    <div className="bg-white rounded-2xl shadow-xl p-6 w-96 flex flex-col gap-4 border border-[#171717]">
+    <div className="bg-white rounded-2xl shadow-xl p-6 w-96 flex flex-col gap-4 ">
       <FileInput
         selectedFiles={selectedFiles}
         setSelectedFiles={setSelectedFiles}
