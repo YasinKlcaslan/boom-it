@@ -5,15 +5,20 @@ import { FaApple } from 'react-icons/fa'
 import Footer from '@/components/Footer'
 import Button from '@/components/Button'
 import { signIn } from "next-auth/react";
+import { useRouter } from 'next/navigation';
 
 function page() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setIsLoading(true);
+
     const res = await signIn("credentials", {
       redirect: false,
       email,
@@ -23,8 +28,10 @@ function page() {
     if (res.error) {
       setError(res.error);
     } else {
-      alert("Login successful");
+      router.push("/");
     }
+
+    setIsLoading(false);
   };
 
   return (
@@ -49,7 +56,19 @@ function page() {
                 <label className="pointer-events-none absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-4 left-4 origin-[0] peer-focus:left-4 peer-focus:text-black peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:left-4 peer-focus:scale-75 peer-focus:-translate-y-6 bg-white px-1">Password</label>
               </div>
               {error && <div className="text-red-500 text-sm">{error}</div>}
-              <Button type="submit" dark className="hover:bg-white hover:text-black hover:outline outline-black" full>Log In</Button>
+              <Button
+                type="submit"
+                dark
+                className={`hover:bg-white hover:text-black hover:outline outline-black ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                full
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <span className="material-symbols-outlined animate-spin">progress_activity</span>
+                ) : (
+                  'Log In'
+                )}
+              </Button>
             </form>
             <div className="flex items-center my-4">
               <div className="flex-grow h-px bg-gray-200" />

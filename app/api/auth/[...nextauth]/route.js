@@ -3,7 +3,12 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaClient } from "@prisma/client";
 import { compare } from "bcryptjs";
 
-const prisma = new PrismaClient();
+let prisma;
+
+if (!global.prisma) {
+  global.prisma = new PrismaClient();
+}
+prisma = global.prisma;
 
 const handler = NextAuth({
   providers: [

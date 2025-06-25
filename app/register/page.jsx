@@ -11,11 +11,14 @@ function page() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setSuccess("");
+    setIsLoading(true);
+
     try {
       const res = await fetch("/api/auth/register", {
         method: "POST",
@@ -24,14 +27,10 @@ function page() {
       });
 
       const text = await res.text();
-      console.log("Response status:", res.status);
-      console.log("Response text:", text);
-
       let data;
       try {
         data = JSON.parse(text); 
       } catch (err) {
-        console.error("Invalid JSON response received:", text);
         throw new Error("Invalid JSON response received.");
       }
 
@@ -39,6 +38,48 @@ function page() {
       setSuccess("Registration successful! You can now log in.");
     } catch (err) {
       setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const [receiverEmail, setReceiverEmail] = useState("");
+  const [subject, setSubject] = useState("");
+  const [message, setMessage] = useState("");
+  const [file, setFile] = useState(null);
+  const [fileError, setFileError] = useState("");
+  const [fileSuccess, setFileSuccess] = useState("");
+
+  const handleFileSubmit = async (e) => {
+    e.preventDefault();
+    setFileError("");
+    setFileSuccess("");
+
+    if (!file) {
+      setFileError("Please select a file to upload.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("receiverEmail", receiverEmail);
+    formData.append("subject", subject);
+    formData.append("message", message);
+
+    try {
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "File upload failed");
+      }
+
+      setFileSuccess("File uploaded successfully!");
+    } catch (err) {
+      setFileError(err.message);
     }
   };
 
@@ -70,7 +111,18 @@ function page() {
               </div>
               {error && <div className="text-red-400 text-sm">{error}</div>}
               {success && <div className="text-green-400 text-sm">{success}</div>}
-              <Button type="submit" className="bg-white text-black hover:bg-transparent hover:text-white hover:outline outline-white" full>Sign Up</Button>
+              <Button
+                type="submit"
+                className={`bg-white text-black hover:bg-transparent hover:text-white hover:outline outline-white ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                full
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <span className="material-symbols-outlined animate-spin">progress_activity</span>
+                ) : (
+                  'Sign Up'
+                )}
+              </Button>
             </form>
             <p className="text-center text-gray-300 text-xs mt-6">By creating an account, you agree to our <a href="/terms" className="text-gray-300 font-semibold hover:underline">Terms of Service</a> and <a href="/privacy" className="text-gray-300 font-semibold hover:underline">Privacy and Cookie Statement</a>.</p>
             <div className="flex items-center my-4">
@@ -87,6 +139,61 @@ function page() {
         </div>
       </div>
       <Footer />      
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <form onSubmit={handleFileSubmit} className="bg-white p-6 rounded shadow-md w-full max-w-md">
+          <h2 className="text-2xl font-bold mb-4">Send a File</h2>
+
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-1">Receiver Email</label>
+            <input
+              type="email"
+              value={receiverEmail}
+              onChange={(e) => setReceiverEmail(e.target.value)}
+              className="w-full border border-gray-300 p-2 rounded"
+              required
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-1">Subject</label>
+            <input
+              type="text"
+              value={subject}
+              onChange={(e) => setSubject(e.target.value)}
+              className="w-full border border-gray-300 p-2 rounded"
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-1">Message</label>
+            <textarea
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              className="w-full border border-gray-300 p-2 rounded"
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-1">File</label>
+            <input
+              type="file"
+              onChange={(e) => setFile(e.target.files[0])}
+              className="w-full border border-gray-300 p-2 rounded"
+              required
+            />
+          </div>
+
+          {fileError && <p className="text-red-500 text-sm mb-4">{fileError}</p>}
+          {fileSuccess && <p className="text-green-500 text-sm mb-4">{fileSuccess}</p>}
+
+          <button
+            type="submit"
+            className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+          >
+            Send File
+          </button>
+        </form>
+      </div>
     </>
   )
 }

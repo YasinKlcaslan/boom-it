@@ -1,13 +1,14 @@
-import "./globals.css";
+"use client";
 
-export const metadata = {
-  title: "BoomIt! - AI Entegrated File Transfer",
-};
+import "./globals.css";
+import { SessionProvider } from 'next-auth/react';
+import { metadata } from './metadata';
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
+        <title>{metadata.title}</title>
         <link rel="icon" href="/boomit-black.png" type="image/png" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
@@ -16,7 +17,9 @@ export default function RootLayout({ children }) {
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
       </head>
       <body>
-        {children}
+        <SessionProvider>
+          {children}
+        </SessionProvider>
       </body>
     </html>
   );

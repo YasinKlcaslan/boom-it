@@ -14,10 +14,24 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
   name     String
-  email    String @unique
+  email    String   @unique
   password String
+  files    File[]   // Kullanıcıya ait dosyalar için ilişki
 }
 
-
+model File {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  name       String
+  s3Key      String
+  size       Int
+  mimeType   String
+  createdAt  DateTime @default(now())
+  user       User?    @relation(fields: [userId], references: [id])
+  userId     String?
+  senderEmail   String
+  receiverEmail String
+  subject       String?
+  message       String?
+}
