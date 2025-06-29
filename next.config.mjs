@@ -2,7 +2,6 @@
 const nextConfig = {
   serverExternalPackages: ['magika'],
   webpack: (config, { isServer }) => {
-    // Magika için gerekli polyfill'ler
     if (!isServer) {
       config.resolve.fallback = {
         ...config.resolve.fallback,
@@ -13,6 +12,13 @@ const nextConfig = {
     }
     
     return config;
+  },
+  turbopack: {
+    resolveAlias: {
+      fs: '',
+      net: '',
+      tls: '',
+    },
   },
 };
 

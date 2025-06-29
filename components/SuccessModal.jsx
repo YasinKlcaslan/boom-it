@@ -1,7 +1,18 @@
 import React from 'react';
 import FileTransfer from './FileTransfer';
 
-const SuccessModal = ({ isVisible, transfers, onClose, loading }) => {
+const SuccessModal = ({ isVisible, transfers, onClose, loading, uploadedFile }) => {
+  const handleDownload = (downloadUrl, fileName) => {
+    if (downloadUrl) {
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.download = fileName || 'download';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
+
   if (!isVisible) return null;
 
   return (
@@ -43,6 +54,28 @@ const SuccessModal = ({ isVisible, transfers, onClose, loading }) => {
           </div>
 
           <div className="flex-1 overflow-y-auto p-6">
+            {uploadedFile && (
+              <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-medium text-green-800 mb-2 font-['Poppins']">File Uploaded Successfully!</h3>
+                    <p className="text-sm text-green-600 font-['Poppins']">{uploadedFile.name}</p>
+                    <p className="text-xs text-green-500 font-['Poppins']">
+                      Size: {uploadedFile.size ? `${(uploadedFile.size / (1024 * 1024)).toFixed(2)} MB` : 'N/A'}
+                    </p>
+                  </div>
+                  {uploadedFile.downloadUrl && (
+                    <button
+                      onClick={() => handleDownload(uploadedFile.downloadUrl, uploadedFile.name)}
+                      className="w-full px-4 py-2 bg-[#171717] text-white rounded-lg hover:bg-gray-800 transition-colors font-['Poppins'] mt-3"
+                    >
+                      Download
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+
             {loading ? (
               <div className="text-center py-12">
                 <span className="material-symbols-outlined animate-spin text-4xl text-gray-800 mb-4 block">progress_activity</span>
@@ -98,6 +131,15 @@ const SuccessModal = ({ isVisible, transfers, onClose, loading }) => {
                           <span className="text-black text-sm max-w-xs text-right">{transfer.message}</span>
                         </div>
                       )}
+                    </div>
+                    
+                    <div className="mt-4">
+                      <button
+                        onClick={() => handleDownload(`/api/download/${transfer.id}`, transfer.name || transfer.fileName)}
+                        className="w-full px-4 py-2 bg-[#171717] text-white rounded-lg hover:bg-gray-800 transition-colors font-['Poppins']"
+                      >
+                        Download
+                      </button>
                     </div>
                   </div>
                 ))}

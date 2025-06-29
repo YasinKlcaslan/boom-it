@@ -128,7 +128,8 @@ function FileTransfer() {
         const firstFile = responseData.files?.[0];
         setUploadedFileInfo({ 
           name: firstFile?.name || 'Files uploaded', 
-          size: firstFile?.size || 0 
+          size: firstFile?.size || 0,
+          downloadUrl: firstFile?.downloadUrl
         });
         setIsModalVisible(true);
         setSelectedFiles([]);
@@ -290,7 +291,11 @@ function FileTransfer() {
         isVisible={isModalVisible}
         transfers={transfers}
         loading={transfersLoading}
-        onClose={() => setIsModalVisible(false)}
+        uploadedFile={uploadedFileInfo}
+        onClose={() => {
+          setIsModalVisible(false);
+          setUploadedFileInfo(null);
+        }}
       />
     </div>
   );

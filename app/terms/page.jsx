@@ -1,6 +1,7 @@
 'use client'
 import React, { useState } from 'react';
-import Footer from '@/components/Footer'; 
+import Footer from '@/components/Footer';
+import Navbar from '@/components/Navbar'; 
 
 const sections = [
 	{
@@ -101,35 +102,60 @@ function page() {
 	const [activeSection, setActiveSection] = useState(sections[0].id)
 
 	return (
-		<div className="flex min-h-screen">
-			<aside className="w-80 min-w-[220px] border-r border-gray-200 bg-[#171717] py-16 px-8 flex flex-col gap-2 text-gray-100">
-				<a href="/">
-					<img src="/boomit-white.png" alt="BoomIt Logo" className="w-32 mb-6 self-center" />
-				</a>
-				<h2 className="font-bold text-lg mb-4">Terms of Service</h2>
-				<nav className="flex flex-col gap-2 text-base">
-					{sections.map((section) => (
-						<button
-							key={section.id}
-							onClick={() => setActiveSection(section.id)}
-							className={`text-left px-2 py-1 rounded transition-colors ${
-								activeSection === section.id
-									? 'bg-gray-200 font-semibold text-black'
-									: 'hover:bg-gray-100'
-							}`}
-						>
-							{section.title}
-						</button>
-					))}
-				</nav>
-			</aside>
-			<main className="flex-1 flex flex-col items-start justify-center px-8 py-16">
-				<h1 className="text-5xl font-bold mb-8">Terms of Service</h1>
-				<div className="prose max-w-2xl text-gray-900 w-full">
-					{sections.find((section) => section.id === activeSection)?.content}
+		<div className="min-h-screen bg-white">
+			<Navbar />
+			
+			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pt-24">
+				<div className="flex gap-12">
+					<aside className="w-80 flex-shrink-0">
+						<div className="sticky top-8">
+							<h2 className="text-xl font-semibold mb-6 text-gray-900">Terms of Service</h2>
+							<nav className="space-y-1">
+								{sections.map((section) => (
+									<button
+										key={section.id}
+										onClick={() => setActiveSection(section.id)}
+										className={`w-full text-left px-3 py-2 text-sm rounded-md transition-colors ${
+											activeSection === section.id
+												? 'bg-gray-100 text-gray-900 font-medium'
+												: 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+										}`}
+									>
+										{section.title}
+									</button>
+								))}
+							</nav>
+						</div>
+					</aside>
+
+					<main className="flex-1 max-w-4xl">
+						<div className="mb-8">
+							<h1 className="text-4xl font-bold text-gray-900 mb-4">Terms of Service</h1>
+							<p className="text-lg text-gray-600">
+								If your usual residence is in the United States of America, these{' '}
+								<span className="underline">Terms of Service</span> apply.
+							</p>
+							<p className="text-lg text-gray-600 mt-2">
+								If your usual residence is outside the United States of America,{' '}
+								<span className="underline">these Terms of Service</span> apply.
+							</p>
+						</div>
+
+						<div className="prose prose-lg max-w-none">
+							{sections.find((section) => section.id === activeSection)?.content}
+						</div>
+
+						<div className="mt-12 pt-8 border-t border-gray-200">
+							<p className="text-sm text-gray-500">Effective as of July 31, 2025</p>
+							<p className="text-sm text-gray-500 mt-1">
+								If your usual residence is in the United States of America
+							</p>
+						</div>
+					</main>
 				</div>
-			</main>
-      <Footer/>
+			</div>
+			
+			<Footer/>
 		</div>
 	)
 }

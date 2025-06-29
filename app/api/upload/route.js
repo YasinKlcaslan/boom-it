@@ -51,13 +51,19 @@ export async function POST(request) {
           },
         });
 
-        uploadedFiles.push(savedFile);
+        uploadedFiles.push({
+          ...savedFile,
+          downloadUrl: `/api/download/${savedFile.id}`
+        });
       } catch (error) {
         return NextResponse.json({ error: "File upload or save failed" }, { status: 500 });
       }
     }
 
-    return NextResponse.json({ files: uploadedFiles }, { status: 200 });
+    return NextResponse.json({ 
+      message: 'Files uploaded successfully',
+      files: uploadedFiles 
+    }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
