@@ -1,3 +1,3 @@
 export const metadata = {
-  title: "BoomIt! - AI Entegrated File Transfer",
+  title: "BoomIt! - AI Integrated File Transfer",
 };
